@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <!-- bootstap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .form-signin {
+            max-width: 330px;
+            padding: 15px;
+        }
+
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    </style>
+</head>
+
+<body class="text-center">
+
+    <main class="form-signin w-100 m-auto" style="max-width: 600px;">
+        <form action="{{ url_for('user.user_register_user_submit') }}" method="post">
+            <img class="mb-4" src="{{ url_for('static', filename='images/user1.jpg') }}" alt="admin login img" width="200"
+                height="210">
+            <h1 class="h3 mb-3 fw-normal">User Register</h1>
+
+            <div class="mb-3 text-start">
+                <label for="InputEmail" class="form-label">Email</label>
+                <input type="email" class="form-control" id="InputEmail" name="email" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="InputName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="InputName" name="name" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="InputContact" class="form-label">Contact</label>
+                <input type="tel" class="form-control" id="InputContact" name="contact" pattern="[0-9]{10}" required>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="InputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" minlength="8" id="InputPassword" name="password" required>
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    Your password must be 8-20 characters long, must contain special characters "!@#$%&*_?", numbers,
+                    lower
+                    and upper letters only.
+                </small>
+                <div id="feedbackin" class="valid-feedback">
+                    Strong Password!
+                </div>
+                <div id="feedbackirn" class="invalid-feedback">
+                    Atlead 8 characters,
+                    Number, special character
+                    Caplital Letter and Small letters
+                </div>
+            </div>
+            <div class="mb-3 text-start">
+                <label for="InputConfirmPassword" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" minlength="8" name="confirm_password"
+                    id="InputConfirmPassword" name="confirm_password" required>
+            </div>
+            <div>
+                <button class="w-100 btn btn-primary mt-3 disable-btn" id="user-submit" type="submit">Create</button>
+            </div>
+        </form>
+        <br>
+        <div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <ul class="flashes" style="list-style: none;padding-left: 0;">
+                {% for category, message in messages %}
+                <li class="alert alert-{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <!-- bootstrap js -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(window).ready(function () {
+
+            const pass = document.querySelector('#InputPassword');
+
+            var validArr = ["[$@$$!%*#?&]", "[A-Z]", "[0-9]", "[a-z]"]
+
+            pass.addEventListener('keyup', function () {
+                var messageArr = [" Special Charector", " Upper Case", " Numbers", " Lower Case"];
+
+                var ctr = 0;
+                var stop_loop = false
+
+                for (var i = 0; i < validArr.length; i++) {
+                    if (new RegExp(validArr[i]).test(pass.value)) {
+                        if (i == 0) messageArr.splice(messageArr.indexOf(" Special Charector"), 1);
+                        if (i == 1) messageArr.splice(messageArr.indexOf(" Upper Case"), 1);
+                        if (i == 2) messageArr.splice(messageArr.indexOf(" Numbers"), 1);
+                        if (i == 3) messageArr.splice(messageArr.indexOf(" Lower Case"), 1);
+                        ctr++;
+                    }
+                    if (messageArr.length == 0) {
+                        stop_loop = true
+                    }
+                }
+
+                switch (ctr) {
+                    case 0:
+                    case 1:
+                        strength = "Way too Weak";
+                        break;
+                    case 2:
+                        strength = "Very Weak";
+                        break;
+                    case 3:
+                        strength = "Weak";
+                        break;
+                    case 4:
+                        strength = "Medium";
+                        break;
+                }
+
+                if (strength == "Medium" && pass.value.length >= 8 && stop_loop) {
+                    strength = "Strong";
+                    pass.setCustomValidity("");
+                } else {
+                    pass.setCustomValidity(strength);
+                }
+
+                var sometext = "";
+
+                if (pass.value.length < 8) {
+                    var lengthI = 8 - pass.value.length;
+                    sometext += ` ${lengthI} more Characters, `;
+                }
+
+                sometext += messageArr;
+                console.log(sometext);
+
+                if (sometext) {
+                    sometext = " You Need" + sometext;
+                }
+
+                $("#feedbackin, #feedbackirn").text(strength + sometext);
+                pass.parentNode.classList.add('was-validated');
+
+            });
+
+            const pass_confirm = document.querySelector('#InputConfirmPassword');
+
+            pass_confirm.addEventListener("keyup", (e) => {
+                pass_confirm.setAttribute("style", "border: solid 1px red");
+                if (pass_confirm.value == pass.value) {
+                    document.querySelector('#user-submit').classList.remove('disable-btn');
+                    pass_confirm.setAttribute("style", "border: solid 2px green");
+                }
+            });
+
+        });
+    </script>
+</body>
+
+</html>

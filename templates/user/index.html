@@ -1,0 +1,163 @@
+{% extends 'user/layout.html' %}
+{% block head %}
+<!-- Tempus Dominus Styles -->
+<link href="https://cdn.jsdelivr.net/gh/Eonasdan/tempus-dominus@master/dist/css/tempus-dominus.css" rel="stylesheet"
+    crossorigin="anonymous">
+<style>
+    .user_card {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
+{% endblock %}
+{% block content %}
+<h2 class="card-title text-center">Bookings Form</h2>
+<hr>
+</div>
+<h4>Welcome {{ name }}!!</h4>
+<div class="py-2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes" style="list-style: none;">
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <br>
+</div>
+<form action="{{ url_for('user.user_booking_submit') }}" method="post">
+    <div class="mb-3">
+        <label for="InputDestination" class="form-label">Destination</label>
+        <select class="form-select" id="InputDestination" name="destination" required>
+            <option selected disabled>-- Choose Destination --</option>
+            <option value="Andhra Pradesh">Andhra Pradesh</option>
+            <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+            <option value="Assam">Assam</option>
+            <option value="Bihar">Bihar</option>
+            <option value="Chhattisgarh">Chhattisgarh</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Haryana">Haryana</option>
+            <option value="Himachal Pradesh">Himachal Pradesh</option>
+            <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+            <option value="Goa">Goa</option>
+            <option value="Jharkhand">Jharkhand</option>
+            <option value="Karnataka">Karnataka</option>
+            <option value="Kerala">Kerala</option>
+            <option value="Madhya Pradesh">Madhya Pradesh</option>
+            <option value="Maharashtra">Maharashtra</option>
+            <option value="Manipur">Manipur</option>
+            <option value="Meghalaya">Meghalaya</option>
+            <option value="Mizoram">Mizoram</option>
+            <option value="Nagaland">Nagaland</option>
+            <option value="Odisha">Odisha</option>
+            <option value="Punjab">Punjab</option>
+            <option value="Rajasthan">Rajasthan</option>
+            <option value="Sikkim">Sikkim</option>
+            <option value="Tamil Nadu">Tamil Nadu</option>
+            <option value="Telangana">Telangana</option>
+            <option value="Tripura">Tripura</option>
+            <option value="Uttarakhand">Uttarakhand</option>
+            <option value="Uttar Pradesh">Uttar Pradesh</option>
+            <option value="West Bengal">West Bengal</option>
+            <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+            <option value="Chandigarh">Chandigarh</option>
+            <option value="Dadra and Nagar Haveli">Dadra and Nagar Haveli</option>
+            <option value="Daman and Diu">Daman and Diu</option>
+            <option value="Delhi">Delhi</option>
+            <option value="Lakshadweep">Lakshadweep</option>
+            <option value="Puducherry">Puducherry</option>
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-sm-6" id="htmlTarget">
+            <label for="datetimepicker1Input" class="form-label">Check-in Date</label>
+            <div class="input-group log-event" id="datetimepicker1" data-td-target-input="nearest"
+                data-td-target-toggle="nearest">
+                <input id="datetimepicker1Input" type="text" class="form-control" data-td-target="#datetimepicker1"
+                    name="in_date" required>
+                <span class="input-group-text" data-td-target="#datetimepicker1" data-td-toggle="datetimepicker">
+                    <i class="fas fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+        <div class="col-sm-6" id="htmlTarget">
+            <label for="datetimepicker1Input" class="form-label">Check-out Date</label>
+            <div class="input-group log-event" id="datetimepicker2" data-td-target-input="nearest"
+                data-td-target-toggle="nearest">
+                <input id="datetimepicker2Input" type="text" class="form-control" data-td-target="#datetimepicker2"
+                    name="out_date" required>
+                <span class="input-group-text" data-td-target="#datetimepicker2" data-td-toggle="datetimepicker">
+                    <i class="fas fa-calendar"></i>
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="InputRoom" class="form-label">No. of Rooms Wanted</label>
+        <input type="number" min="1" max="100" class="form-control" id="InputRoom" name="rooms_count" required>
+    </div>
+    <div class="mb-3">
+        <label for="InputPeople" class="form-label">Person Count</label>
+        <input type="number" min="1" max="100" class="form-control" id="InputPeople" name="people_count" required>
+    </div>
+
+    <div>
+        <button class="w-100 btn btn-success mt-3" id="user-submit" type="submit">Submit</button>
+    </div>
+</form>
+{% endblock %}
+{% block script %}
+<!-- Popperjs -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+    crossorigin="anonymous"></script>
+<!-- Tempus Dominus JavaScript -->
+<script src="https://cdn.jsdelivr.net/gh/Eonasdan/tempus-dominus@master/dist/js/tempus-dominus.js"
+    crossorigin="anonymous"></script>
+<script>
+    $(window).ready(function () {
+        const date = new Date();
+        let day = date.getDate();
+        let day_t = date.getDate() + 1;
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+        let currentDate = `${month}/${day}/${year}`;
+        let currentDate1 = `${month}/${day_t}/${year}`;
+        const datetimepicker1 = new tempusDominus.TempusDominus(document.getElementById('datetimepicker1'), {
+            display: {
+                icons: {
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right',
+                },
+                components: {
+                    clock: false,
+                },
+                inline: false,
+                theme: 'auto'
+            },
+            restrictions: {
+                minDate: currentDate,
+            }
+        });
+        const datetimepicker2 = new tempusDominus.TempusDominus(document.getElementById('datetimepicker2'), {
+            display: {
+                icons: {
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right',
+                },
+                components: {
+                    clock: false,
+                },
+                inline: false,
+                theme: 'auto'
+            },
+            restrictions: {
+                minDate: currentDate1,
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'admin/layout.html' %}
+{% block head %}
+<style>
+    .disable-btn {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Create New User</h1>
+</div>
+<div class="py-2">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashes" style="list-style: none;">
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <br>
+</div>
+<div class="container px-md-4">
+    <form id="create_user_form" action="{{ url_for('admin.admin_create_user_submit') }}" method="post">
+        <div class="mb-3">
+            <label for="InputEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="InputEmail" name="email" required>
+        </div>
+        <div class="mb-3">
+            <label for="InputName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="InputName" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="InputContact" class="form-label">Contact</label>
+            <input type="tel" class="form-control" id="InputContact" name="contact" pattern="[0-9]{10}" required>
+        </div>
+        <div class="mb-3">
+            <label for="InputPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" minlength="8" id="InputPassword" name="password" required>
+            <small id="passwordHelpBlock" class="form-text text-muted">
+                Your password must be 8-20 characters long, must contain special characters "!@#$%&*_?", numbers, lower
+                and upper letters only.
+            </small>
+            <div id="feedbackin" class="valid-feedback">
+                Strong Password!
+            </div>
+            <div id="feedbackirn" class="invalid-feedback">
+                Atlead 8 characters,
+                Number, special character
+                Caplital Letter and Small letters
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="InputConfirmPassword" class="form-label">Confirm Password</label>
+            <input type="password" class="form-control" minlength="8" name="confirm_password" id="InputConfirmPassword"
+                name="confirm_password" required>
+        </div>
+        <div>
+            <button class="w-100 btn btn-primary mt-3 disable-btn" id="user-submit" type="submit">Create</button>
+        </div>
+    </form>
+</div>
+<br>
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <th>#</th>
+            <th>User Id</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+            {% for i in users %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ i.user_id }}</td>
+                <td>{{ i.name }}</td>
+                <td>{{ i.email }}</td>
+                <td>{% if i.contact != '0' %}
+                    {{ i.contact }}
+                    {% else %}
+                    N/A
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="#" class="me-2" data-bs-toggle="modal" data-bs-target="#deleteModal" data-user-id="{{ i.user_id }}">
+                        <button class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                    </a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateModal" data-user-id="{{ i.user_id }}">
+                        <button class="btn btn-outline-warning"><i class="fas fa-edit"></i></button>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- delete Modal -->
+<div class="modal fade" id="deleteModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Are you sure you want to delete the User??</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('admin.admin_remove_user_submit') }}" method="post">
+                    <input type="hidden" name="user_id" id="user_id_del">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Update Modal -->
+<div class="modal fade" id="updateModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="updateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateModalLabel">Update User Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ url_for('admin.admin_update_user_submit') }}" method="post">
+                    <input type="hidden" name="user_id" id="user_id_update">
+                    <div class="mb-3">
+                        <label for="InputEmailUpdate" class="form-label">User Email</label>
+                        <input type="email" class="form-control" id="InputEmailUpdate" name="email" disabled required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="InputNameUpdate" class="form-label">User Name</label>
+                        <input type="text" class="form-control" id="InputNameUpdate" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="InputContactUpdate" class="form-label">User Contact</label>
+                        <input type="tel" class="form-control" id="InputContactUpdate" pattern="[0-9]{10}" name="contact" required>
+                    </div>
+                    <div>
+                        <button class="w-100 btn btn-warning mt-3 disable-btn" id="user-update-submit"
+                            type="submit">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    $(window).ready(function () {
+        $('#deleteModal').on('show.bs.modal', function (e) {
+            var user_id = $(e.relatedTarget).data('user-id');
+            $('#user_id_del').val(user_id);
+        });
+
+        $('#updateModal').on('show.bs.modal', function (e) {
+            var user_id = $(e.relatedTarget).data('user-id');
+            $('#user_id_update').val(user_id);
+
+            $.ajax({
+                url: "/admin/get/user",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ user_id: user_id, user_status: true }),
+            }).done(function (response) {
+                if (response.status) {
+                    $('#InputEmailUpdate').val(response.body.email);
+                    $('#InputNameUpdate').val(response.body.name);
+                    $('#InputContactUpdate').val(response.body.contact);
+                    document.querySelector('#user-update-submit').classList.remove('disable-btn');
+                }
+            });
+
+        });
+
+        const pass = document.querySelector('#InputPassword');
+
+        var validArr = ["[$@$$!%*#?&]", "[A-Z]", "[0-9]", "[a-z]"]
+
+        pass.addEventListener('keyup', function () {
+            var messageArr = [" Special Charector", " Upper Case", " Numbers", " Lower Case"];
+
+            var ctr = 0;
+            var stop_loop = false
+
+            for (var i = 0; i < validArr.length; i++) {
+                if (new RegExp(validArr[i]).test(pass.value)) {
+                    if (i == 0) messageArr.splice(messageArr.indexOf(" Special Charector"), 1);
+                    if (i == 1) messageArr.splice(messageArr.indexOf(" Upper Case"), 1);
+                    if (i == 2) messageArr.splice(messageArr.indexOf(" Numbers"), 1);
+                    if (i == 3) messageArr.splice(messageArr.indexOf(" Lower Case"), 1);
+                    ctr++;
+                }
+                if (messageArr.length == 0) {
+                    stop_loop = true
+                }
+            }
+
+            switch (ctr) {
+                case 0:
+                case 1:
+                    strength = "Way too Weak";
+                    break;
+                case 2:
+                    strength = "Very Weak";
+                    break;
+                case 3:
+                    strength = "Weak";
+                    break;
+                case 4:
+                    strength = "Medium";
+                    break;
+            }
+
+            if (strength == "Medium" && pass.value.length >= 8 && stop_loop) {
+                strength = "Strong";
+                pass.setCustomValidity("");
+            } else {
+                pass.setCustomValidity(strength);
+            }
+
+            var sometext = "";
+
+            if (pass.value.length < 8) {
+                var lengthI = 8 - pass.value.length;
+                sometext += ` ${lengthI} more Characters, `;
+            }
+
+            sometext += messageArr;
+            console.log(sometext);
+
+            if (sometext) {
+                sometext = " You Need" + sometext;
+            }
+
+            $("#feedbackin, #feedbackirn").text(strength + sometext);
+            pass.parentNode.classList.add('was-validated');
+
+        });
+
+        const pass_confirm = document.querySelector('#InputConfirmPassword');
+
+        pass_confirm.addEventListener("keyup", (e) => {
+            pass_confirm.setAttribute("style", "border: solid 1px red");
+            if (pass_confirm.value == pass.value) {
+                document.querySelector('#user-submit').classList.remove('disable-btn');
+                pass_confirm.setAttribute("style", "border: solid 2px green");
+            }
+        });
+
+    });
+</script>
+{% endblock %}

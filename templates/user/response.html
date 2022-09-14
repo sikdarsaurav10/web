@@ -1,0 +1,25 @@
+{% extends 'user/layout.html' %}
+{% block content %}
+<br>
+<br>
+<p class="card-title" style="font-size: 3rem;">Bookings Successfull!!</p>
+<br>
+<h4>You will be redirect to main page in <span id="timer">5</span></h4>
+<br>
+<br>
+<br>
+{% endblock %}
+{% block script %}
+<script>
+    $(window).ready(function () {
+        var i = 5
+        setInterval(function () {
+            $('#timer').html(i);
+            i -= 1
+        }, 1000);
+        setTimeout(function () {
+            window.location.href = '/usr/';
+        }, 5000);
+    });
+</script>
+{% endblock %}

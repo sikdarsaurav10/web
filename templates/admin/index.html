@@ -1,0 +1,55 @@
+{% extends 'admin/layout.html' %}
+{% block content %}
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+</div>
+
+<br>
+
+<div class="mx-auto">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class=flashes>
+        {% for category, message in messages %}
+        <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+</div>
+
+<div class="row rowCards">
+    <div class="col-md-4 col-sm">
+        <div class="card shadow p-2 mb-3 rounded">
+            <div class="card-body">
+                <h5 class="card-title"><strong>Add New Admin</strong></h5>
+            </div>
+            <a href="{{ url_for('admin.admin_create_view') }}" class="stretched-link"></a>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm">
+        <div class="card shadow p-2 mb-3 rounded">
+            <div class="card-body">
+                <h5 class="card-title"><strong>Add New User</strong></h5>
+            </div>
+            <a href="{{ url_for('admin.admin_create_user_view') }}" class="stretched-link"></a>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm">
+        <div class="card shadow p-2 mb-3 rounded">
+            <div class="card-body">
+                <h5 class="card-title"><strong>All Bookings</strong></h5>
+            </div>
+            <a href="{{ url_for('admin.admin_all_bookings_view') }}" class="stretched-link"></a>
+        </div>
+    </div>
+    <div class="col-md-4 col-sm">
+        <div class="card shadow p-2 mb-3 rounded">
+            <div class="card-body">
+                <h5 class="card-title"><strong>User Reports</strong></h5>
+            </div>
+            <a href="{{ url_for('admin.admin_user_report_view') }}" class="stretched-link"></a>
+        </div>
+    </div>
+</div>
+{% endblock %}
